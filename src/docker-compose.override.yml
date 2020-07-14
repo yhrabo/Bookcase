@@ -1,0 +1,54 @@
+version: '3.4'
+
+services:
+  nosqldata:
+    ports:
+      - "27018:27017"
+    volumes:
+      - bookcase-nosqlvolume:/data/db
+
+  sqldata:
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=PASS01word
+      - MSSQL_PID=Express
+    ports:
+      - "1434:1433"
+    volumes:
+      - bookcase-sqlvolume:/var/opt/mssql/data
+
+  catalog.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionString=${BOOKCASE_SQLDB:-Server=sqldata;Database=Bookcase.Services.Catalog;User Id=sa;Password=PASS01word}
+      - IdentityUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}
+    ports:
+      - "5200:80"
+
+  identity.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - ConnectionString=${BOOKCASE_SQLDB:-Server=sqldata;Database=Bookcase.Services.Identity;User Id=sa;Password=PASS01word}
+      - SQLDB_MAX_RETRY_COUNT=2
+      - SQLDB_MAX_RETRY_DELAY_IN_SECONDS=4
+      - CatalogApiClient=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:5200
+      - ShelvesApiClient=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:5201
+    ports:
+      - "80:80"
+
+  shelves.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionString=${BOOKCASE_NOSQLDB:-mongodb://nosqldata}
+      - DatabaseName=ShelvesDb
+      - IdentityUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}
+      - IdentityUrlExternal=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}
+    ports:
+      - "5201:80"
+
+volumes:
+  bookcase-nosqlvolume:
+    external: false
+  bookcase-sqlvolume:
+    external: false
