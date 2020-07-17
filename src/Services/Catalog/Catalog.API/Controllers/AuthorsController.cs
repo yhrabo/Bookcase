@@ -55,7 +55,7 @@ namespace Bookcase.Services.Catalog.API.Controllers
             [FromQuery]int pageSize = 10, [FromQuery]int pageIndex = 0)
         {
             var countedItems = await _catalogContext.Authors.CountAsync();
-            var pageItems = await _catalogContext.Authors
+            var pageItems = await _catalogContext.Authors.OrderByDescending(a => a.Id)
                 .Skip(pageSize * pageIndex).Take(pageSize).ToListAsync();
             return new PaginatedItemsViewModel<AuthorOutputViewModel>(pageIndex, pageSize, countedItems,
                 pageItems.Select(i => MapAuthorToAuthorOutputViewModel(i)));
