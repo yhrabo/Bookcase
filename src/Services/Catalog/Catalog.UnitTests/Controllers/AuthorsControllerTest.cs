@@ -13,6 +13,7 @@ using Xunit;
 
 namespace Catalog.UnitTests.Controllers
 {
+    [Collection("Collection One.")]
     public class AuthorsControllerTest
     {
         private readonly DbContextOptions<CatalogDbContext> _dbOptions;

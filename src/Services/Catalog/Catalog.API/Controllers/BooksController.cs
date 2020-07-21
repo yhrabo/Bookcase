@@ -52,11 +52,11 @@ namespace Bookcase.Services.Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AllowAnonymous]
-        public async Task<ActionResult<PaginatedItemsViewModel<BookOutputViewModel>>> GetBooksAsync(
+        public async Task<ActionResult<PaginatedItemsViewModel<BookOutputViewModel>>> GetBooks(
             [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 0)
         {
             var countedItems = await _catalogContext.Books.CountAsync();
-            var pageItems = await _catalogContext.Books.GetBook()
+            var pageItems = await _catalogContext.Books.GetBook().OrderByDescending(b => b.Id)
                 .Skip(pageSize * pageIndex).Take(pageSize).ToListAsync();
             return new PaginatedItemsViewModel<BookOutputViewModel>(pageIndex, pageSize, countedItems,
                 pageItems.Select(i => MapBookToBookOutputViewModel(i)));
@@ -69,7 +69,8 @@ namespace Bookcase.Services.Catalog.API.Controllers
             book.CurrentValues.SetValues(bookToCreate);
             book.Entity.BooksAuthors.AddRange(MapBookAuthorsToBookAuthorEnumerable(book.Entity, bookToCreate));
             await _catalogContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetBookById), new { id = book.Entity.Id }, null);
+            return CreatedAtAction(nameof(GetBookById), new { id = book.Entity.Id },
+                MapBookToBookOutputViewModel(book.Entity));
         }
 
         [HttpPut("{id:long}")]
