@@ -49,7 +49,7 @@ namespace Catalog.UnitTests.Controllers
             var b = Assert.IsAssignableFrom<BookOutputViewModel>(result.Value);
             Assert.Equal(id, b.Id);
             Assert.Equal("Title", b.Title);
-            Assert.Equal("1", b.ISBN);
+            Assert.Equal("1", b.Isbn);
             Assert.Equal(52, b.NumberOfPages);
             Assert.Contains(b.Authors, a => a.Name == "Peter");
         }
@@ -105,7 +105,7 @@ namespace Catalog.UnitTests.Controllers
             Assert.Equal(GetFakeBooksCatalog().Count, pi.Count);
             var b = pi.Data.First();
             Assert.Equal("Next title", b.Title);
-            Assert.Equal("2", b.ISBN);
+            Assert.Equal("2", b.Isbn);
             Assert.Equal(121, b.NumberOfPages);
             Assert.Equal(2L, b.Id);
             Assert.Equal("Stacy", b.Authors.First().Name);
@@ -143,7 +143,7 @@ namespace Catalog.UnitTests.Controllers
             var numPages = (short)600;
             var authorIds = new int[] { 100, 200 };
             var inputVM = new BookInputViewModel
-            { Title = t, ISBN = isbn, NumberOfPages = numPages, AuthorsIds = authorIds };
+            { Title = t, Isbn = isbn, NumberOfPages = numPages, AuthorsIds = authorIds };
 
             // Act.
             var result = await controller.CreateBookAsync(inputVM);
@@ -152,7 +152,7 @@ namespace Catalog.UnitTests.Controllers
             var ar = Assert.IsType<CreatedAtActionResult>(result.Result);
             var vm = Assert.IsType<BookOutputViewModel>(ar.Value);
             Assert.Equal(t, vm.Title);
-            Assert.Equal(isbn, vm.ISBN);
+            Assert.Equal(isbn, vm.Isbn);
             Assert.Equal(numPages, vm.NumberOfPages);
             var fb = ctx.Books.Find(vm.Id);
             Assert.NotEqual(0, fb.Id);
@@ -171,7 +171,7 @@ namespace Catalog.UnitTests.Controllers
             var numPages = (short)220;
             var authorIds = new int[] { 50, 51 };
             var inputVM = new BookInputViewModel
-            { Title = t, ISBN = isbn, NumberOfPages = numPages, AuthorsIds = authorIds };
+            { Title = t, Isbn = isbn, NumberOfPages = numPages, AuthorsIds = authorIds };
 
             // Act.
             var result = await controller.UpdateBookAsync(id, inputVM);
@@ -180,7 +180,7 @@ namespace Catalog.UnitTests.Controllers
             Assert.IsType<NoContentResult>(result);
             var fb = ctx.Books.Find(id);
             Assert.Equal(t, fb.Title);
-            Assert.Equal(isbn, fb.ISBN);
+            Assert.Equal(isbn, fb.Isbn);
             Assert.Equal(numPages, fb.NumberOfPages);
             Assert.Contains(fb.BooksAuthors, ba => authorIds.Contains(ba.AuthorId));
         }
@@ -267,12 +267,12 @@ namespace Catalog.UnitTests.Controllers
         {
             return new Book[]
             {
-                new Book { Id = 1, Title = "Title", ISBN = "1", NumberOfPages = 52 },
-                new Book { Id = 2, Title = "Next title", ISBN = "2", NumberOfPages = 121 },
-                new Book { Id = 3, Title = "Good title", ISBN = "3", NumberOfPages = 100 },
-                new Book { Id = 4, Title = "Incredible T", ISBN = "4", NumberOfPages = 102 },
-                new Book { Id = 5, Title = "Here?", ISBN = "2-32", NumberOfPages = 434 },
-                new Book { Id = 6, Title = "Yes", ISBN = "0-1-2-3", NumberOfPages = 278 }
+                new Book { Id = 1, Title = "Title", Isbn = "1", NumberOfPages = 52 },
+                new Book { Id = 2, Title = "Next title", Isbn = "2", NumberOfPages = 121 },
+                new Book { Id = 3, Title = "Good title", Isbn = "3", NumberOfPages = 100 },
+                new Book { Id = 4, Title = "Incredible T", Isbn = "4", NumberOfPages = 102 },
+                new Book { Id = 5, Title = "Here?", Isbn = "2-32", NumberOfPages = 434 },
+                new Book { Id = 6, Title = "Yes", Isbn = "0-1-2-3", NumberOfPages = 278 }
             };
         }
 

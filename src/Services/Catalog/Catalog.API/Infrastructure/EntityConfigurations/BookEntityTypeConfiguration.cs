@@ -11,7 +11,7 @@
             builder.HasIndex(b => b.Title)
                 .IsUnique(false);
 
-            builder.HasIndex(b => b.ISBN)
+            builder.HasIndex(b => b.Isbn)
                 .IsUnique();
 
             builder.Property(b => b.Title)

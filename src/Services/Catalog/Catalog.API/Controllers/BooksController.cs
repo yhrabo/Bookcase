@@ -135,7 +135,7 @@ namespace Bookcase.Services.Catalog.API.Controllers
             return new BookOutputViewModel
             {
                 Id = b.Id,
-                ISBN = b.ISBN,
+                Isbn = b.Isbn,
                 NumberOfPages = b.NumberOfPages,
                 Title = b.Title,
                 Authors = b.BooksAuthors.Select(ba => new AuthorOutputViewModel

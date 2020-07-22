@@ -30,12 +30,12 @@ namespace Catalog.API.Infrastructure
                 using var transaction = ctx.Database.BeginTransaction();
                 var books = new Book[]
                 {
-                    new Book { Id = 1, Title = "Title", ISBN = "1", NumberOfPages = 52 },
-                    new Book { Id = 2, Title = "Next title", ISBN = "2", NumberOfPages = 121 },
-                    new Book { Id = 3, Title = "Good title", ISBN = "3", NumberOfPages = 100 },
-                    new Book { Id = 4, Title = "Incredible T", ISBN = "4", NumberOfPages = 102 },
-                    new Book { Id = 5, Title = "Here?", ISBN = "2-32", NumberOfPages = 434 },
-                    new Book { Id = 6, Title = "Yes", ISBN = "0-1-2-3", NumberOfPages = 278 }
+                    new Book { Id = 1, Title = "Title", Isbn = "1", NumberOfPages = 52 },
+                    new Book { Id = 2, Title = "Next title", Isbn = "2", NumberOfPages = 121 },
+                    new Book { Id = 3, Title = "Good title", Isbn = "3", NumberOfPages = 100 },
+                    new Book { Id = 4, Title = "Incredible T", Isbn = "4", NumberOfPages = 102 },
+                    new Book { Id = 5, Title = "Here?", Isbn = "2-32", NumberOfPages = 434 },
+                    new Book { Id = 6, Title = "Yes", Isbn = "0-1-2-3", NumberOfPages = 278 }
                 };
 
                 var ba = new BookAuthor[]
