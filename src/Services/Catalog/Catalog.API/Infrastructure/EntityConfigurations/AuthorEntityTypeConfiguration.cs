@@ -10,6 +10,10 @@
         {
             builder.HasIndex(a => a.Name)
                 .IsUnique(false);
+
+            builder.Property(a => a.Name)
+                .IsRequired()
+                .HasMaxLength(Author.NameMaxLength);
         }
     }
 }

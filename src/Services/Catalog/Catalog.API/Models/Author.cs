@@ -5,12 +5,10 @@ namespace Bookcase.Services.Catalog.API.Models
 {
     public class Author
     {
+        public const int NameMaxLength = 50;
+
         public int Id { get; set; }
-
-        [Required]
-        [StringLength(50, MinimumLength = 1)]
         public string Name { get; set; }
-
         public List<BookAuthor> BooksAuthors { get; set; } = new List<BookAuthor>();
     }
 }

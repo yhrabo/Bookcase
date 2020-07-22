@@ -1,12 +1,13 @@
 ﻿namespace Bookcase.Services.Catalog.API.ViewModels
 {
+    using Bookcase.Services.Catalog.API.Models;
     using System;
     using System.ComponentModel.DataAnnotations;
 
     public class BookInputViewModel
     {
         [Required]
-        [StringLength(200, MinimumLength = 1)]
+        [StringLength(Book.TitleMaxLength, MinimumLength = 1)]
         public string Title { get; set; }
 
         [Range(1, 10000)]

@@ -13,6 +13,10 @@
 
             builder.HasIndex(b => b.ISBN)
                 .IsUnique();
+
+            builder.Property(b => b.Title)
+                .IsRequired()
+                .HasMaxLength(Book.TitleMaxLength);
         }
     }
 }
