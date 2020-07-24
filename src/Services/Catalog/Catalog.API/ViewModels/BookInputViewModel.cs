@@ -14,6 +14,7 @@
         public short NumberOfPages { get; set; }
 
         [Required]
+        [RegularExpression(@"^[\d\s-]{10,17}$", MatchTimeoutInMilliseconds = Book.IsbnMatchTimeoutInMilliseconds)]
         public string Isbn { get; set; }
 
         [Required]
