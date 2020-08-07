@@ -32,3 +32,14 @@ services:
     depends_on:
       - nosqldata
       - identity.api
+
+  webmvc:
+    image: ${DOCKER_REGISTRY-}webmvc
+    build:
+      context: .
+      dockerfile: Web/WebMVC/Dockerfile
+    depends_on:
+      - identity.api
+      - catalog.api
+      - shelves.api
+

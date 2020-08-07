@@ -58,6 +58,42 @@ namespace Identity.API
                     PostLogoutRedirectUris = { $"{clientsUrl["ShelvesApi"]}/swagger/" },
                     AllowedScopes = { "shelves" }
                 },
+                new Client
+                {
+                    ClientId = "mvc",
+                    ClientName = "MVC Client",
+                    ClientSecrets = new List<Secret>
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    ClientUri = $"{clientsUrl["Mvc"]}",
+                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    AllowAccessTokensViaBrowser = false,
+                    RequireConsent = false,
+                    AllowOfflineAccess = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    RedirectUris = new List<string>
+                    {
+                        $"{clientsUrl["Mvc"]}/signin-oidc",
+                        $"{clientsUrl["Mvc"]}/catalog",
+                    },
+                    PostLogoutRedirectUris = new List<string>
+                    {
+                        $"{clientsUrl["Mvc"]}/catalog",
+                        $"{clientsUrl["Mvc"]}/"
+                    },
+                    AllowedScopes = new List<string>
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        "catalog",
+                        "shelves",
+                    },
+                    AccessTokenLifetime = 60 * 60 * 2,
+                    IdentityTokenLifetime= 60 * 60 * 2,
+                    RequirePkce = false
+                },
             };
         }
     }

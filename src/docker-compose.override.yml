@@ -21,34 +21,50 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionString=${BOOKCASE_SQLDB:-Server=sqldata;Database=Bookcase.Services.Catalog;User Id=sa;Password=PASS01word}
-      - IdentityUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}
+      - IdentityUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:8080
     ports:
       - "5200:80"
 
   identity.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - ASPNETCORE_URLS=http://0.0.0.0:8080
       - ConnectionString=${BOOKCASE_SQLDB:-Server=sqldata;Database=Bookcase.Services.Identity;User Id=sa;Password=PASS01word}
       - SQLDB_MAX_RETRY_COUNT=2
       - SQLDB_MAX_RETRY_DELAY_IN_SECONDS=4
       - CatalogApiClient=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:5200
       - ShelvesApiClient=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:5201
+      - MvcClient=https://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}
     ports:
-      - "80:80"
+      - "8080:8080"
 
   shelves.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionString=${BOOKCASE_NOSQLDB:-mongodb://nosqldata}
       - DatabaseName=ShelvesDb
-      - IdentityUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}
+      - IdentityUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:8080
       - IdentityUrlExternal=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}
     ports:
       - "5201:80"
+
+  webmvc:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - CallbackUrl=https://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}/Catalog
+      - CatalogApiClientUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:5200
+      - IdentityUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:8080
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 
 volumes:
   bookcase-nosqlvolume:
     external: false
   bookcase-sqlvolume:
     external: false
+

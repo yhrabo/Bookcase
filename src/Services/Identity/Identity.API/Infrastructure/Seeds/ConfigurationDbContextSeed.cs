@@ -19,6 +19,7 @@ namespace Identity.API.Infrastructure.Seeds
                 var clientsUrl = new Dictionary<string, string>();
                 clientsUrl.Add("CatalogApi", cfg["CatalogApiClient"]);
                 clientsUrl.Add("ShelvesApi", cfg["ShelvesApiClient"]);
+                clientsUrl.Add("Mvc", cfg["MvcClient"]);
                 foreach (var client in Config.GetClients(clientsUrl))
                 {
                     context.Clients.Add(client.ToEntity());
