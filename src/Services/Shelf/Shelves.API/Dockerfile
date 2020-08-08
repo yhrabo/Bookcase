@@ -6,8 +6,11 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
+COPY ["Services/Catalog/Catalog.API/Catalog.API.csproj", "Services/Catalog/Catalog.API/"]
+COPY ["Services/Identity/Identity.API/Identity.API.csproj", "Services/Identity/Identity.API/"]
 COPY ["Services/Shelf/Shelves.API/Shelves.API.csproj", "Services/Shelf/Shelves.API/"]
-RUN dotnet restore "Services/Shelf/Shelves.API/Shelves.API.csproj"
+COPY ["Web/WebMVC/WebMVC.csproj", "Web/WebMVC/"]
+RUN dotnet restore "bookcase.sln"
 COPY . .
 WORKDIR "/src/Services/Shelf/Shelves.API"
 RUN dotnet build "Shelves.API.csproj" -c Release -o /app/build
