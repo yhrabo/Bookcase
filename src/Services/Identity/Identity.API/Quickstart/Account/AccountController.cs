@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace IdentityServerHost.Quickstart.UI
 {
@@ -134,8 +135,7 @@ namespace IdentityServerHost.Quickstart.UI
                     }
                     else
                     {
-                        // user might have clicked on a malicious link - should be logged
-                        throw new Exception("invalid return URL");
+                        return Redirect(model.ReturnUrl);
                     }
                 }
 
@@ -208,6 +208,56 @@ namespace IdentityServerHost.Quickstart.UI
             return View();
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Register(string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser
+                {
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    EmailConfirmed = true,
+                    PhoneNumber = model.User.PhoneNumber
+                };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Errors.Count() > 0)
+                {
+                    AddErrors(result);
+                    return View(model);
+                }
+
+                result = _userManager.AddClaimsAsync(user, new Claim[]{
+                            new Claim(JwtClaimTypes.Name, model.Name),
+                        }).Result;
+                if (result.Errors.Count() > 0)
+                {
+                    AddErrors(result);
+                    return View(model);
+                }
+            }
+
+            if (returnUrl != null)
+            {
+                if (ModelState.IsValid)
+                    return Redirect(returnUrl);
+                else
+                    return View(model);
+            }
+
+            return RedirectToAction("login", "account");
+        }
 
         /*****************************************/
         /* helper APIs for the AccountController */
@@ -338,6 +388,14 @@ namespace IdentityServerHost.Quickstart.UI
             }
 
             return vm;
+        }
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
         }
     }
 }
