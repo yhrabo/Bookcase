@@ -57,15 +57,14 @@ namespace Bookcase.Services.Shelves.API.Services
         /// <summary>
         /// Gets the shelf from persistent storage.
         /// </summary>
-        /// <param name="id">Id of the shelf.</param>
+        /// <param name="shelfId">Id of the shelf.</param>
         /// <param name="shelfPage">Page number.</param>
         /// <param name="shelfPageSize">Number of shelf items on page.</param>
-        /// <param name="shelfUserId">Id of the shelf owner.</param>
         /// <param name="relation">Relation between shelf owner and user who requested the shelf.</param>
         /// <returns>A task that represents the asynchronous operation.
         /// The task result contains view model of requested shelf.</returns>
-        Task<ShelfViewModel> GetShelfAsync(string id, int shelfPage, int shelfPageSize,
-            string shelfUserId, UserRelationshipToShelfOwner relation);
+        Task<ShelfViewModel> GetShelfAsync(string shelfId, int shelfPage, int shelfPageSize,
+            UserRelationshipToShelfOwner relation);
 
         /// <summary>
         /// Gets shelves from persistent storage.

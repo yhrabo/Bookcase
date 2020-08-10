@@ -143,8 +143,8 @@ namespace Bookcase.Services.Shelves.API
                     {
                         Implicit = new OpenApiOAuthFlow
                         {
-                            AuthorizationUrl = new Uri($"{cfg.GetValue<string>("IdentityUrlExternal")}/connect/authorize"),
-                            TokenUrl = new Uri($"{cfg.GetValue<string>("IdentityUrlExternal")}/connect/token"),
+                            AuthorizationUrl = new Uri($"{cfg.GetValue<string>("IdentityUrl")}/connect/authorize"),
+                            TokenUrl = new Uri($"{cfg.GetValue<string>("IdentityUrl")}/connect/token"),
                             Scopes = new Dictionary<string, string>
                             {
                                 { "shelves", "Shelves API" }

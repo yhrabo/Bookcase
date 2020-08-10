@@ -75,14 +75,13 @@ namespace Bookcase.Services.Shelves.API.Services
             throw new ShelfDomainException("No acknowledgement from database.");
         }
 
-        public async Task<ShelfViewModel> GetShelfAsync(string id, int shelfPage,
-            int shelfPageSize, string shelfUserId, UserRelationshipToShelfOwner relation)
+        public async Task<ShelfViewModel> GetShelfAsync(string shelfId, int shelfPage,
+            int shelfPageSize, UserRelationshipToShelfOwner relation)
         {
             var filter = relation == UserRelationshipToShelfOwner.None
-                ? Builders<Shelf>.Filter.Where(s => (s.Id == id)
-                    && (s.OwnerId == shelfUserId) && (s.AccessLevel == AccessLevel.All))
-                : Builders<Shelf>.Filter.Where(s => (s.Id == id)
-                    && (s.OwnerId == shelfUserId));
+                ? Builders<Shelf>.Filter.Where(s => (s.Id == shelfId)
+                    && (s.AccessLevel == AccessLevel.All))
+                : Builders<Shelf>.Filter.Where(s => (s.Id == shelfId));
 
             var projection = Builders<Shelf>.Projection
                 .Include(s => s.Id)
@@ -95,7 +94,7 @@ namespace Bookcase.Services.Shelves.API.Services
                 return null;
             }
 
-            var agg = _shelves.Aggregate().Match(s => (s.Id == id) && (s.OwnerId == shelfUserId));
+            var agg = _shelves.Aggregate().Match(s => (s.Id == shelfId));
             agg = relation == UserRelationshipToShelfOwner.None
                 ? agg.Match(s => s.AccessLevel == AccessLevel.All)
                 : agg;
