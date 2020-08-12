@@ -24,6 +24,7 @@ namespace Bookcase.Services.Shelves.API.Controllers
         }
 
         [HttpGet("user/{userId:guid}")]
+        [AllowAnonymous]
         public async Task<ActionResult<PaginatedItemsViewModel<ShelvesViewModel>>> GetShelves(
             [FromRoute] string userId, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 0)
         {
@@ -34,6 +35,7 @@ namespace Bookcase.Services.Shelves.API.Controllers
         }
 
         [HttpGet("{shelfId:length(24)}")]
+        [AllowAnonymous]
         public async Task<ActionResult<ShelfViewModel>> GetShelf(string shelfId,
             [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 0)
         {

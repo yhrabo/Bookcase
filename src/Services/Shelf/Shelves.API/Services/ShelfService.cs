@@ -84,8 +84,6 @@ namespace Bookcase.Services.Shelves.API.Services
                 : Builders<Shelf>.Filter.Where(s => (s.Id == shelfId));
 
             var projection = Builders<Shelf>.Projection
-                .Include(s => s.Id)
-                .Include(s => s.Name)
                 .Slice(s => s.ShelfItems, shelfPage * shelfPageSize, shelfPageSize);
             var shelf = await _shelves.Find(filter)
                 .Project<Shelf>(projection).SingleOrDefaultAsync();
@@ -105,6 +103,8 @@ namespace Bookcase.Services.Shelves.API.Services
             {
                 Id = shelf.Id,
                 Name = shelf.Name,
+                AccessLevel = shelf.AccessLevel,
+                OwnerId = shelf.OwnerId,
                 ShelfItems = new PaginatedItemsViewModel<ShelfItem>(shelfPage, shelfPageSize,
                     countItems, shelf.ShelfItems)
             };

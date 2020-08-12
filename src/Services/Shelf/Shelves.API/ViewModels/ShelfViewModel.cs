@@ -10,6 +10,8 @@ namespace Bookcase.Services.Shelves.API.ViewModels
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public AccessLevel AccessLevel { get; set; }
+        public string OwnerId { get; set; }
         public PaginatedItemsViewModel<ShelfItem> ShelfItems { get; set; }
     }
 }
