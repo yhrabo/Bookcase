@@ -83,31 +83,9 @@ namespace Bookcase.Services.Shelves.API.Services
                     && (s.AccessLevel == AccessLevel.All))
                 : Builders<Shelf>.Filter.Where(s => (s.Id == shelfId));
 
-            var projection = Builders<Shelf>.Projection
-                .Slice(s => s.ShelfItems, shelfPage * shelfPageSize, shelfPageSize);
-            var shelf = await _shelves.Find(filter)
-                .Project<Shelf>(projection).SingleOrDefaultAsync();
-            if (shelf == null)
-            {
-                return null;
-            }
-
-            var agg = _shelves.Aggregate().Match(s => (s.Id == shelfId));
-            agg = relation == UserRelationshipToShelfOwner.None
-                ? agg.Match(s => s.AccessLevel == AccessLevel.All)
-                : agg;
-            var bd = await agg.Project(new BsonDocument("count", new BsonDocument("$size", "$ShelfItems")))
-                .FirstOrDefaultAsync();
-            var countItems = bd.GetValue("count").ToInt32();
-            return new ShelfViewModel
-            {
-                Id = shelf.Id,
-                Name = shelf.Name,
-                AccessLevel = shelf.AccessLevel,
-                OwnerId = shelf.OwnerId,
-                ShelfItems = new PaginatedItemsViewModel<ShelfItem>(shelfPage, shelfPageSize,
-                    countItems, shelf.ShelfItems)
-            };
+            return shelfPageSize != 0
+                ? await GetShelfAsync(shelfId, filter, relation, shelfPage, shelfPageSize)
+                : await GetShelfAsync(filter);
         }
 
         public async Task<PaginatedItemsViewModel<ShelvesViewModel>> GetShelvesAsync(int shelvesPage,
@@ -146,10 +124,55 @@ namespace Bookcase.Services.Shelves.API.Services
             return o.OwnerId;
         }
 
-        private (bool isAccessLevelValid, AccessLevel al) ChooseAccessLevel(string shelfUserId, string reqUserId)
+        private async Task<ShelfViewModel> GetShelfAsync(FilterDefinition<Shelf> filter)
         {
-            return shelfUserId == reqUserId ? (false, AccessLevel.All)
-                : (true, AccessLevel.All);
+            var projection = Builders<Shelf>.Projection
+                .Include(s => s.Id)
+                .Include(s => s.Name)
+                .Include(s => s.OwnerId)
+                .Include(s => s.AccessLevel);
+            var shelf = await _shelves.Find(filter)
+                .Project<Shelf>(projection).SingleOrDefaultAsync();
+            return shelf == null
+                ? null
+                : new ShelfViewModel
+                {
+                    Id = shelf.Id,
+                    Name = shelf.Name,
+                    AccessLevel = shelf.AccessLevel,
+                    OwnerId = shelf.OwnerId,
+                    ShelfItems = null
+                };
+        }
+
+        private async Task<ShelfViewModel> GetShelfAsync(string shelfId, FilterDefinition<Shelf> filter,
+            UserRelationshipToShelfOwner relation, int shelfPage, int shelfPageSize)
+        {
+            var projection = Builders<Shelf>.Projection
+                .Slice(s => s.ShelfItems, shelfPage * shelfPageSize, shelfPageSize);
+            var shelf = await _shelves.Find(filter)
+                .Project<Shelf>(projection).SingleOrDefaultAsync();
+            if (shelf == null)
+            {
+                return null;
+            }
+
+            var agg = _shelves.Aggregate().Match(s => (s.Id == shelfId));
+            agg = relation == UserRelationshipToShelfOwner.None
+                ? agg.Match(s => s.AccessLevel == AccessLevel.All)
+                : agg;
+            var bd = await agg.Project(new BsonDocument("count", new BsonDocument("$size", "$ShelfItems")))
+                .FirstOrDefaultAsync();
+            var countItems = bd.GetValue("count").ToInt32();
+            return new ShelfViewModel
+            {
+                Id = shelf.Id,
+                Name = shelf.Name,
+                AccessLevel = shelf.AccessLevel,
+                OwnerId = shelf.OwnerId,
+                ShelfItems = new PaginatedItemsViewModel<ShelfItem>(shelfPage, shelfPageSize,
+                    countItems, shelf.ShelfItems)
+            };
         }
     }
 
