@@ -2,12 +2,12 @@
 
 @{
     ViewData["Title"] = "Index";
-    ViewData["IsOwner"] = User.FindFirst(ClaimTypes.NameIdentifier)?.Value == (string)ViewData["userId"];
+    var isOwner = User.FindFirst(ClaimTypes.NameIdentifier)?.Value == (string)ViewData["userId"];
 }
 
 <h1>Index</h1>
 
-@if ((bool)ViewData["IsOwner"])
+@if (isOwner)
 {
     <p>
         <a asp-action="Create">Create New</a>
@@ -48,7 +48,7 @@
                         @Html.DisplayFor(modelItem => item.AccessLevel)
                     </td>
                     <td>
-                        @if ((bool)ViewData["IsOwner"])
+                        @if (isOwner)
                         {
                             @Html.ActionLink("Edit", "Edit", new { shelfId = item.Id }) <span>|</span>
 
@@ -56,7 +56,7 @@
 
                         @Html.ActionLink("Details", "Details", new { shelfId = item.Id })
 
-                        @if ((bool)ViewData["IsOwner"])
+                        @if (isOwner)
                         {
                             <span>|</span>
                             @Html.ActionLink("Delete", "Delete", new { shelfId = item.Id })

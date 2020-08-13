@@ -94,11 +94,12 @@ namespace WebMVC.Areas.Shelves.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteBook(string shelfId, long bookId)
         {
             if (await _shelfService.DeleteBookFromShelfAsync(shelfId, bookId))
             {
-                TempData["message"] = $"Book with id {shelfId} was successfully deleted from the shelf.";
                 return RedirectToAction(nameof(Details), new { shelfId });
             }
             else

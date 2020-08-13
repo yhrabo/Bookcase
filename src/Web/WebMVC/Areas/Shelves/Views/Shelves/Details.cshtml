@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    var isOwner = User.FindFirst(ClaimTypes.NameIdentifier)?.Value == Model.OwnerId;
 }
 
 <h1>Details</h1>
@@ -59,9 +60,15 @@
                         @Html.DisplayFor(modelItem => item.BookTitle)
                     </td>
                     <td>
-                        @Html.ActionLink("Details", "Details", "Books", new { area = "Catalog", id = item.BookId }) |
-                        @Html.ActionLink("Delete", "DeleteBook", "Shelves",
-                            new { area = "Shelves", shelfId = Model.Id, bookId = item.BookId })
+                        @Html.ActionLink("Details", "Details", "Books", new { area = "Catalog", id = item.BookId })
+                        @if (isOwner)
+                        {
+                            <span>|</span>
+                            <form style="display:inline" asp-action="DeleteBook" asp-route-shelfId="@Model.Id">
+                                <input type="text" name="bookId" value="@item.BookId" hidden="hidden" />
+                                <input type="submit" value="Delete from shelf" class="btn btn-danger" />
+                            </form>
+                        }
                     </td>
                 </tr>
             }

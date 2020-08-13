@@ -54,7 +54,7 @@ namespace Bookcase.Services.Shelves.API.Controllers
             return CreatedAtAction(nameof(GetShelf), new { userId = currUser, shelfId = id }, null);
         }
 
-        [HttpPost("{shelfId:length(24)}/items/")]
+        [HttpPost("{shelfId:length(24)}/")]
         public async Task<IActionResult> AddBookToShelf(string shelfId, [FromBody] AddBookViewModel bookViewModel)
         {
             var result = await AuthorizeOperation(shelfId);
@@ -82,7 +82,7 @@ namespace Bookcase.Services.Shelves.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{shelfId:length(24)}/items/{bookId:long}")]
+        [HttpDelete("{shelfId:length(24)}/{bookId:long}")]
         public async Task<IActionResult> DeleteBook(string shelfId, long bookId)
         {
             var result = await AuthorizeOperation(shelfId);
