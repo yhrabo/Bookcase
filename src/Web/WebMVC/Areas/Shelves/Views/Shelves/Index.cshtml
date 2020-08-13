@@ -1,0 +1,71 @@
+﻿@model WebMVC.ViewModels.IndexViewModel<WebMVC.Areas.Shelves.ViewModels.ShelvesViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    ViewData["IsOwner"] = User.FindFirst(ClaimTypes.NameIdentifier)?.Value == (string)ViewData["userId"];
+}
+
+<h1>Index</h1>
+
+@if ((bool)ViewData["IsOwner"])
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+
+@{
+    var msg = TempData["message"] as string;
+    if (!string.IsNullOrEmpty(msg))
+    {
+        <div class="alert alert-success">
+            @msg
+        </div>
+    }
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Items.First().Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Items.First().AccessLevel)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Items.Count() > 0)
+        {
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AccessLevel)
+                    </td>
+                    <td>
+                        @if ((bool)ViewData["IsOwner"])
+                        {
+                            @Html.ActionLink("Edit", "Edit", new { shelfId = item.Id }) <span>|</span>
+
+                        }
+
+                        @Html.ActionLink("Details", "Details", new { shelfId = item.Id })
+
+                        @if ((bool)ViewData["IsOwner"])
+                        {
+                            <span>|</span>
+                            @Html.ActionLink("Delete", "Delete", new { shelfId = item.Id })
+                        }
+                    </td>
+                </tr>
+            }
+
+            <partial name="_Pagination" for="PaginationInfo" />
+        }
+    </tbody>
+</table>

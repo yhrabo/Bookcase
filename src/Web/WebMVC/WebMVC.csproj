@@ -20,7 +20,10 @@
 
   <ItemGroup>
     <Folder Include="Areas\Catalog\Data\" />
+    <Folder Include="Areas\Catalog\Infrastructure\" />
     <Folder Include="Areas\Catalog\Models\" />
+    <Folder Include="Areas\Shelves\Data\" />
+    <Folder Include="Areas\Shelves\Models\" />
   </ItemGroup>
 
 </Project>

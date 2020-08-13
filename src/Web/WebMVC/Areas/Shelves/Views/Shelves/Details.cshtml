@@ -1,0 +1,72 @@
+﻿@model WebMVC.Areas.Shelves.ViewModels.ShelfViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    @Html.ActionLink("Edit shelf", "Edit", "Shelves", new { area = "Shelves", shelfId = Model.Id }) |
+    <a asp-route="UserShelves" asp-route-userId="@Model.OwnerId">Back to List</a>
+</div>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AccessLevel)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AccessLevel)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PaginationInfo.TotalItems)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PaginationInfo.TotalItems)
+        </dd>
+    </dl>
+</div>
+
+@if (Model.ShelfItems.Count() > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ShelfItems.FirstOrDefault().BookId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ShelfItems.FirstOrDefault().BookTitle)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ShelfItems)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BookId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BookTitle)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Details", "Details", "Books", new { area = "Catalog", id = item.BookId }) |
+                        @Html.ActionLink("Delete", "DeleteBook", "Shelves",
+                            new { area = "Shelves", shelfId = Model.Id, bookId = item.BookId })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <partial name="_Pagination" for="PaginationInfo" />
+}

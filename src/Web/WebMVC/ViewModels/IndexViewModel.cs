@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WebMVC.Areas.Catalog.ViewModels
+namespace WebMVC.ViewModels
 {
     public class IndexViewModel<T> where T : class
     {

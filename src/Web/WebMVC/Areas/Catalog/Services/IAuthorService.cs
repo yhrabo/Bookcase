@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using WebMVC.Areas.Catalog.Infrastructure;
 using WebMVC.Areas.Catalog.ViewModels;
+using WebMVC.Infrastructure;
 
 namespace WebMVC.Areas.Catalog.Services
 {

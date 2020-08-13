@@ -1,17 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
+using System;
+using System.Text.Json;
 using WebMVC.Areas.Catalog.Services;
+using WebMVC.Areas.Shelves.Infrastructure;
+using WebMVC.Areas.Shelves.Services;
 using WebMVC.Infrastructure;
 
 namespace WebMVC
@@ -35,6 +33,7 @@ namespace WebMVC
             services.Configure<AppSettings>(Configuration);
             services.AddControllers();
             services.AddCustomAuthentication(Configuration);
+            services.AddJsonSerializerOptions();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,11 +66,34 @@ namespace WebMVC
                     areaName: "Catalog",
                     pattern: "Catalog/{controller=Authors}/{action=Index}/{id?}"
                     );
+                endpoints.MapAreaControllerRoute(
+                    name: "areaShelves",
+                    areaName: "Shelves",
+                    pattern: "{controller=Shelves}/{action}/{shelfId?}/{bookId?}"
+                    );
                 endpoints.MapControllerRoute(
                     name: "Controller",
                     pattern: "{controller}/{action}"
                     );
                 endpoints.MapControllers();
+                //endpoints.MapGet("/routes", request =>
+                //{
+                //    request.Response.Headers.Add("content-type", "application/json");
+                //    var ep = endpoints.DataSources.First().Endpoints.Select(e => e as RouteEndpoint);
+                //    return request.Response.WriteAsync(
+                //        JsonSerializer.Serialize(
+                //            ep.Select(e => new
+                //            {
+                //                Method = ((HttpMethodMetadata)e.Metadata.FirstOrDefault(m => m.GetType() == typeof(HttpMethodMetadata)))?.HttpMethods.First(),
+                //                Route = e.RoutePattern.RawText
+                //            }),
+                //            new JsonSerializerOptions
+                //            {
+                //                WriteIndented = true
+                //            }
+                //        )
+                //        );
+                //});
             });
         }
     }
@@ -104,6 +126,7 @@ namespace WebMVC
                 options.Scope.Add("openid");
                 options.Scope.Add("profile");
                 options.Scope.Add("catalog");
+                options.Scope.Add("shelves");
             });
 
             return services;
@@ -116,7 +139,20 @@ namespace WebMVC
 
             services.AddHttpClient<IAuthorService, HttpAuthorService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
+            services.AddHttpClient<IShelfService, HttpShelfService>()
+                .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
 
+            return services;
+        }
+
+        public static IServiceCollection AddJsonSerializerOptions(this IServiceCollection services)
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            };
+            options.Converters.Add(new AccessLevelJsonConverter());
+            services.AddSingleton(options);
             return services;
         }
     }

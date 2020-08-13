@@ -53,6 +53,7 @@ services:
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - CallbackUrl=https://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}/Catalog
       - CatalogApiClientUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:5200
+      - ShelvesApiClientUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:5201
       - IdentityUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:8080
       - IdentityRegisterUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:8080/Account/Register
     ports:

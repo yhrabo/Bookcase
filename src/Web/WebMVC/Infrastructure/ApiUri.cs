@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WebMVC.Infrastructure
+﻿namespace WebMVC.Infrastructure
 {
     // TODO Split between areas.
     public static class ApiUri
@@ -27,6 +22,23 @@ namespace WebMVC.Infrastructure
                 => $"{baseUri}?pageIndex={pageIndex}&pageSize={pageSize}";
 
             public static string UpdateAuthor(string baseUri, long id) => $"{baseUri}{id}";
+        }
+
+        public static class Shelves
+        {
+            public static string AddBook(string baseUri, string shelfId)
+                   => $"{baseUri}{shelfId}";
+            public static string AddShelf(string baseUri) => $"{baseUri}";
+            public static string DeleteBook(string baseUri, string shelfId, long bookId)
+                   => $"{baseUri}{shelfId}/{bookId}";
+            public static string DeleteShelf(string baseUri, string shelfId) => $"{baseUri}{shelfId}";
+            public static string GetShelf(string baseUri, string shelfId,
+                int pageIndex, int pageSize)
+                   => $"{baseUri}{shelfId}?pageIndex={pageIndex}&pageSize={pageSize}";
+            public static string GetShelves(string baseUri, string userId, int pageIndex, int pageSize)
+                   => $"{baseUri}user/{userId}?pageIndex={pageIndex}&pageSize={pageSize}";
+            public static string UpdateShelf(string baseUri, string shelfId) => $"{baseUri}{shelfId}";
+
         }
     }
 }

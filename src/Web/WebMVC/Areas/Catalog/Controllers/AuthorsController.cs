@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebMVC.Areas.Catalog.Infrastructure;
+using System.Threading.Tasks;
 using WebMVC.Areas.Catalog.Services;
 using WebMVC.Areas.Catalog.ViewModels;
+using WebMVC.ViewModels;
 
 namespace WebMVC.Areas.Catalog.Controllers
 {

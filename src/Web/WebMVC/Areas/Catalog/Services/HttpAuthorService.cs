@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using WebMVC.Areas.Catalog.Infrastructure;
 using WebMVC.Areas.Catalog.ViewModels;
 using WebMVC.Infrastructure;
 using WebMVC.Infrastructure.Exceptions;

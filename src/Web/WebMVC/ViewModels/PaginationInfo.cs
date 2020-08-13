@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
-namespace WebMVC.Areas.Catalog.ViewModels
+namespace WebMVC.ViewModels
 {
     public class PaginationInfo
     {
@@ -11,5 +8,7 @@ namespace WebMVC.Areas.Catalog.ViewModels
         public int CurrentPage { get; set; }
         public bool IsPreviousPageExist { get; set; }
         public bool IsNextPageExist { get; set; }
+        [DisplayName("Total Items")]
+        public long? TotalItems { get; set; }
     }
 }

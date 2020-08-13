@@ -1,4 +1,4 @@
-﻿@model WebMVC.Areas.Catalog.ViewModels.IndexViewModel<WebMVC.Areas.Catalog.ViewModels.AuthorOutputViewModel>
+﻿@model WebMVC.ViewModels.IndexViewModel<WebMVC.Areas.Catalog.ViewModels.AuthorOutputViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -50,7 +50,7 @@
                 </tr>
             }
 
-            <partial name="_pagination" for="PaginationInfo" />
+            <partial name="_Pagination" for="PaginationInfo" />
         }
     </tbody>
 </table>
