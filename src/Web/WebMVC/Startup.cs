@@ -11,6 +11,7 @@ using WebMVC.Areas.Catalog.Services;
 using WebMVC.Areas.Shelves.Infrastructure;
 using WebMVC.Areas.Shelves.Services;
 using WebMVC.Infrastructure;
+using WebMVC.Services;
 
 namespace WebMVC
 {
@@ -34,6 +35,7 @@ namespace WebMVC
             services.AddControllers();
             services.AddCustomAuthentication(Configuration);
             services.AddJsonSerializerOptions();
+            services.AddTransient<IUsersService, GrpcUsersService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

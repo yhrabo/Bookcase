@@ -36,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.UnitTests", "Servic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web Apps", "Web Apps", "{943F1D06-E29B-4B8E-8968-3DCBF04F9B7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebMVC", "Web\WebMVC\WebMVC.csproj", "{5C25519D-9597-4815-8C82-A68F1B71E695}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebMVC", "Web\WebMVC\WebMVC.csproj", "{5C25519D-9597-4815-8C82-A68F1B71E695}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

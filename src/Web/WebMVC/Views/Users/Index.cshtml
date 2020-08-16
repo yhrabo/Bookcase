@@ -1,0 +1,36 @@
+﻿@model WebMVC.ViewModels.IndexViewModel<WebMVC.ViewModels.UserViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Items.FirstOrDefault().UserName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Items.Count() > 0)
+        {
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Shelves", "Index", "Shelves", new { area = "Shelves", userId = item.Id })
+                    </td>
+                </tr>
+            }
+
+            <partial name="_Pagination" for="PaginationInfo" />
+        }
+    </tbody>
+</table>

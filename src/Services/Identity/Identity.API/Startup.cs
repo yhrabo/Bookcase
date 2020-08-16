@@ -1,5 +1,6 @@
 ﻿using Identity.API.Data;
 using Identity.API.Models;
+using Identity.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -46,6 +47,8 @@ namespace Bookcase.Services.Identity.API
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
+
+            services.AddGrpc();
         }
 
         public void Configure(IApplicationBuilder app)
@@ -62,6 +65,7 @@ namespace Bookcase.Services.Identity.API
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGrpcService<UsersService>();
                 endpoints.MapDefaultControllerRoute();
             });
         }

@@ -35,8 +35,11 @@ services:
       - CatalogApiClient=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:5200
       - ShelvesApiClient=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:5201
       - MvcClient=https://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}
+      - GRPC_PORT=8081
+      - PORT=8080
     ports:
       - "8080:8080"
+      - "8081:8081"
 
   shelves.api:
     environment:
@@ -55,6 +58,7 @@ services:
       - CatalogApiClientUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:5200
       - ShelvesApiClientUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:5201
       - IdentityUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:8080
+      - IdentityApiClientUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:8081
       - IdentityRegisterUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:8080/Account/Register
     ports:
       - "80:80"
