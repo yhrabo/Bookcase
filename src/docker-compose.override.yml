@@ -54,12 +54,12 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
-      - CallbackUrl=https://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}/Catalog
       - CatalogApiClientUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:5200
       - ShelvesApiClientUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:5201
       - IdentityUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:8080
       - IdentityApiClientUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:8081
       - IdentityRegisterUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:8080/Account/Register
+      - LogoutRedirectUrl=/home/index
     ports:
       - "80:80"
       - "443:443"

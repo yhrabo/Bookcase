@@ -75,27 +75,10 @@ namespace WebMVC
                     );
                 endpoints.MapControllerRoute(
                     name: "Controller",
-                    pattern: "{controller}/{action}"
+                    pattern: "{controller=Home}/{action=Index}",
+                    defaults: new { controller = "Home", action = "Index" }
                     );
                 endpoints.MapControllers();
-                //endpoints.MapGet("/routes", request =>
-                //{
-                //    request.Response.Headers.Add("content-type", "application/json");
-                //    var ep = endpoints.DataSources.First().Endpoints.Select(e => e as RouteEndpoint);
-                //    return request.Response.WriteAsync(
-                //        JsonSerializer.Serialize(
-                //            ep.Select(e => new
-                //            {
-                //                Method = ((HttpMethodMetadata)e.Metadata.FirstOrDefault(m => m.GetType() == typeof(HttpMethodMetadata)))?.HttpMethods.First(),
-                //                Route = e.RoutePattern.RawText
-                //            }),
-                //            new JsonSerializerOptions
-                //            {
-                //                WriteIndented = true
-                //            }
-                //        )
-                //        );
-                //});
             });
         }
     }
@@ -117,8 +100,7 @@ namespace WebMVC
             {
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.Authority = cfg.GetValue<string>("IdentityUrl");
-                options.SignedOutRedirectUri = cfg.GetValue<string>("CallbackUrl");
-                //options.SignedOutCallbackPath = "/Catalog";
+                options.SignedOutRedirectUri = cfg.GetValue<string>("LogoutRedirectUrl");
                 options.ClientId = "mvc";
                 options.ClientSecret = "secret";
                 options.ResponseType = "code id_token";

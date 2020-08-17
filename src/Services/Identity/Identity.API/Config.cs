@@ -72,16 +72,8 @@ namespace Identity.API
                     RequireConsent = false,
                     AllowOfflineAccess = true,
                     AlwaysIncludeUserClaimsInIdToken = true,
-                    RedirectUris = new List<string>
-                    {
-                        $"{clientsUrl["Mvc"]}/signin-oidc",
-                        $"{clientsUrl["Mvc"]}/catalog",
-                    },
-                    PostLogoutRedirectUris = new List<string>
-                    {
-                        $"{clientsUrl["Mvc"]}/catalog",
-                        $"{clientsUrl["Mvc"]}/"
-                    },
+                    RedirectUris = { $"{clientsUrl["Mvc"]}/signin-oidc" },
+                    PostLogoutRedirectUris = { $"{clientsUrl["Mvc"]}/signout-callback-oidc" },
                     AllowedScopes = new List<string>
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
