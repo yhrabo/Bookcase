@@ -2,11 +2,47 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to Bookcase</h1>
-    <p>This is a pet project to practice building .NET Core application
-    based on a simplified microservices architecture and Docker containers.</p>
-    <p>The application provides books/authors catalog, and service to create
-    your own book collections called shelves.</p>
+<div class="text-left">
+    <h1>Welcome to Bookcase</h1>
+    <p>
+        This is a pet project to practice building .NET Core application
+        based on a simplified microservices architecture and Docker containers.
+    </p>
+    <p>
+        The application provides books/authors catalog, and service to create
+        your own book collections called shelves.
+    </p>
     <h3>Architecture overview</h3>
+    <p>
+        The architecture proposes a microservice oriented architecture implementation
+        with autonomous microservices. There are 3 microservices based on
+        ASP.NET Core Web API, and 1 web application based on ASP.NET Core MVC.
+    </p>
+    <p>
+        Microservices are implemented as a simple CRUD. Data is stored in SQL Server
+        and MongoDB databases. Microservices list:
+    </p>
+    <ul>
+        <li>"Catalog" is responsible for books/authors catalog.</li>
+        <li>"Identity" is responsible for authentication/authorization.</li>
+        <li>“Shelves” is responsible for users' owned book collections.</li>
+    </ul>
+    <p>
+        MVC communicates with microservices using HTTP protocol. The communication is
+        based on gRPC and REST API using JSON format.
+    </p>
+    <p>For simplification, unit test covers only Catalog.API partly.</p>
+    <h3>Getting started</h3>
+    <p>
+        You have to install Visual Studio 2019 with .NET Core cross-platform development
+        workload. To build and run the application with F5 or Ctrl + F5, the “docker-compose”
+        project has to be set as the default startup project.
+    </p>
+    <h4>Related links:</h4>
+    <ul>
+        <li><a href="https://host.docker.internal/">https://host.docker.internal/</a> - MVC</li>
+        <li><a href="http://host.docker.internal:8080/">http://host.docker.internal:8080/</a> - IdentityServer4</li>
+        <li><a href="http://host.docker.internal:5200/swagger/index.html">http://host.docker.internal:5200/swagger/index.html</a> - Swagger UI for Catalog.API</li>
+        <li><a href="http://host.docker.internal:5201/swagger/index.html">http://host.docker.internal:5201/swagger/index.html</a> - Swagger UI for Shelves.API</li>
+    </ul>
 </div>
