@@ -37,7 +37,7 @@ namespace Bookcase.Services.Catalog.API.Controllers
                 return BadRequest();
             }
 
-            var book = await _catalogContext.Books.GetBook().SingleOrDefaultAsync(b => b.Id == id);
+            var book = await _catalogContext.Books.GetDetailedBook().SingleOrDefaultAsync(b => b.Id == id);
 
             if (book == null)
             {
@@ -56,7 +56,7 @@ namespace Bookcase.Services.Catalog.API.Controllers
             [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 0)
         {
             var countedItems = await _catalogContext.Books.CountAsync();
-            var pageItems = await _catalogContext.Books.GetBook().OrderByDescending(b => b.Id)
+            var pageItems = await _catalogContext.Books.GetDetailedBook().OrderByDescending(b => b.Id)
                 .Skip(pageSize * pageIndex).Take(pageSize).ToListAsync();
             return new PaginatedItemsViewModel<BookOutputViewModel>(pageIndex, pageSize, countedItems,
                 pageItems.Select(i => MapBookToBookOutputViewModel(i)));
@@ -70,6 +70,20 @@ namespace Bookcase.Services.Catalog.API.Controllers
             book.Entity.BooksAuthors.AddRange(MapBookAuthorsToBookAuthorEnumerable(book.Entity, bookToCreate));
             await _catalogContext.SaveChangesAsync();
             return CreatedAtAction(nameof(GetBookById), new { id = book.Entity.Id }, null);
+
+            List<BookAuthor> MapBookAuthorsToBookAuthorEnumerable(Book book, BookInputViewModel bookVm)
+            {
+                var bookAuthors = new List<BookAuthor>();
+                foreach (var id in bookVm.AuthorsIds)
+                {
+                    bookAuthors.Add(new BookAuthor
+                    {
+                        AuthorId = id,
+                        Book = book
+                    });
+                }
+                return bookAuthors;
+            }
         }
 
         [HttpPut("{id:long}")]
@@ -80,7 +94,7 @@ namespace Bookcase.Services.Catalog.API.Controllers
                 return BadRequest();
             }
 
-            var book = await _catalogContext.Books.GetBook().SingleOrDefaultAsync(
+            var book = await _catalogContext.Books.GetDetailedBook().SingleOrDefaultAsync(
                 b => b.Id == id);
 
             if (book == null)
@@ -89,30 +103,32 @@ namespace Bookcase.Services.Catalog.API.Controllers
             }
 
             _catalogContext.Entry(book).CurrentValues.SetValues(bookToUpdate);
-            book.BooksAuthors = MapBookAuthorsToBookAuthorEnumerable(book, bookToUpdate);
-
-            // Update book authors.
-            var currentBookAuthorsIds = book.BooksAuthors.Select(ba => ba.AuthorId);
-            var idsToRemove = currentBookAuthorsIds.Except(bookToUpdate.AuthorsIds);
-            foreach (var aId in idsToRemove)
-            {
-                var toRemove = book.BooksAuthors.FirstOrDefault(b => b.AuthorId == aId);
-                if (toRemove != null)
-                    book.BooksAuthors.Remove(toRemove);
-            }
-            var idsToAdd = bookToUpdate.AuthorsIds.Except(currentBookAuthorsIds);
-            foreach (var aId in idsToAdd)
-            {
-                book.BooksAuthors.Add(new BookAuthor
-                {
-                    AuthorId = aId,
-                    Book = book
-                });
-            }
-
+            UpdateBookAuthors();
             _catalogContext.Books.Update(book);
             await _catalogContext.SaveChangesAsync();
             return NoContent();
+
+            // Update book authors.
+            void UpdateBookAuthors()
+            {
+                var currentBookAuthorsIds = book.BooksAuthors.Select(ba => ba.AuthorId);
+                var idsToRemove = currentBookAuthorsIds.Except(bookToUpdate.AuthorsIds);
+                foreach (var aId in idsToRemove)
+                {
+                    var toRemove = book.BooksAuthors.FirstOrDefault(b => b.AuthorId == aId);
+                    if (toRemove != null)
+                        book.BooksAuthors.Remove(toRemove);
+                }
+                var idsToAdd = bookToUpdate.AuthorsIds.Except(currentBookAuthorsIds);
+                foreach (var aId in idsToAdd)
+                {
+                    book.BooksAuthors.Add(new BookAuthor
+                    {
+                        AuthorId = aId,
+                        Book = book
+                    });
+                }
+            }
         }
 
         [HttpDelete("{id:long}")]
@@ -135,20 +151,6 @@ namespace Bookcase.Services.Catalog.API.Controllers
             return NoContent();
         }
 
-        private List<BookAuthor> MapBookAuthorsToBookAuthorEnumerable(Book book, BookInputViewModel bookVm)
-        {
-            var bookAuthors = new List<BookAuthor>();
-            foreach (var id in bookVm.AuthorsIds)
-            {
-                bookAuthors.Add(new BookAuthor
-                {
-                    AuthorId = id,
-                    Book = book
-                });
-            }
-            return bookAuthors;
-        }
-
         private BookOutputViewModel MapBookToBookOutputViewModel(Book b)
         {
             return new BookOutputViewModel
@@ -168,7 +170,7 @@ namespace Bookcase.Services.Catalog.API.Controllers
 
     public static class IQuerybleBook
     {
-        public static IQueryable<Book> GetBook(this IQueryable<Book> query)
+        public static IQueryable<Book> GetDetailedBook(this IQueryable<Book> query)
         {
             return query.Include(b => b.BooksAuthors).ThenInclude(ba => ba.Author);
         }
