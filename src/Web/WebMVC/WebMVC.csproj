@@ -9,6 +9,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Catalog\Data\**" />
+    <Compile Remove="Areas\Catalog\Infrastructure\**" />
+    <Compile Remove="Areas\Catalog\Models\**" />
+    <Content Remove="Areas\Catalog\Data\**" />
+    <Content Remove="Areas\Catalog\Infrastructure\**" />
+    <Content Remove="Areas\Catalog\Models\**" />
+    <EmbeddedResource Remove="Areas\Catalog\Data\**" />
+    <EmbeddedResource Remove="Areas\Catalog\Infrastructure\**" />
+    <EmbeddedResource Remove="Areas\Catalog\Models\**" />
+    <None Remove="Areas\Catalog\Data\**" />
+    <None Remove="Areas\Catalog\Infrastructure\**" />
+    <None Remove="Areas\Catalog\Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.13.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.31.0" />
     <PackageReference Include="Grpc.Tools" Version="2.31.0">
@@ -25,9 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Catalog\Data\" />
-    <Folder Include="Areas\Catalog\Infrastructure\" />
-    <Folder Include="Areas\Catalog\Models\" />
     <Folder Include="Areas\Shelves\Data\" />
     <Folder Include="Areas\Shelves\Models\" />
   </ItemGroup>

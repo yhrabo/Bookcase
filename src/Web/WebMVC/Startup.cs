@@ -123,6 +123,8 @@ namespace WebMVC
 
             services.AddHttpClient<IAuthorService, HttpAuthorService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
+            services.AddHttpClient<IBookService, HttpBookService>()
+                .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
             services.AddHttpClient<IShelfService, HttpShelfService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
 

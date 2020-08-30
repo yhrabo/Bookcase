@@ -21,7 +21,7 @@
             public static string GetBooks(string baseUri, int pageIndex, int pageSize)
                 => $"{baseUri}?pageIndex={pageIndex}&pageSize={pageSize}";
 
-            public static string UpdateAuthor(string baseUri, long id) => $"{baseUri}{id}";
+            public static string UpdateBook(string baseUri, long id) => $"{baseUri}{id}";
         }
 
         public static class Shelves

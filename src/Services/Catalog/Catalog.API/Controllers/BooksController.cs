@@ -63,14 +63,13 @@ namespace Bookcase.Services.Catalog.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BookOutputViewModel>> CreateBookAsync([FromBody] BookInputViewModel bookToCreate)
+        public async Task<IActionResult> CreateBookAsync([FromBody] BookInputViewModel bookToCreate)
         {
             var book = _catalogContext.Books.Add(new Book());
             book.CurrentValues.SetValues(bookToCreate);
             book.Entity.BooksAuthors.AddRange(MapBookAuthorsToBookAuthorEnumerable(book.Entity, bookToCreate));
             await _catalogContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetBookById), new { id = book.Entity.Id },
-                MapBookToBookOutputViewModel(book.Entity));
+            return CreatedAtAction(nameof(GetBookById), new { id = book.Entity.Id }, null);
         }
 
         [HttpPut("{id:long}")]
@@ -81,7 +80,7 @@ namespace Bookcase.Services.Catalog.API.Controllers
                 return BadRequest();
             }
 
-            var book = await _catalogContext.Books.SingleOrDefaultAsync(
+            var book = await _catalogContext.Books.GetBook().SingleOrDefaultAsync(
                 b => b.Id == id);
 
             if (book == null)
@@ -91,6 +90,26 @@ namespace Bookcase.Services.Catalog.API.Controllers
 
             _catalogContext.Entry(book).CurrentValues.SetValues(bookToUpdate);
             book.BooksAuthors = MapBookAuthorsToBookAuthorEnumerable(book, bookToUpdate);
+
+            // Update book authors.
+            var currentBookAuthorsIds = book.BooksAuthors.Select(ba => ba.AuthorId);
+            var idsToRemove = currentBookAuthorsIds.Except(bookToUpdate.AuthorsIds);
+            foreach (var aId in idsToRemove)
+            {
+                var toRemove = book.BooksAuthors.FirstOrDefault(b => b.AuthorId == aId);
+                if (toRemove != null)
+                    book.BooksAuthors.Remove(toRemove);
+            }
+            var idsToAdd = bookToUpdate.AuthorsIds.Except(currentBookAuthorsIds);
+            foreach (var aId in idsToAdd)
+            {
+                book.BooksAuthors.Add(new BookAuthor
+                {
+                    AuthorId = aId,
+                    Book = book
+                });
+            }
+
             _catalogContext.Books.Update(book);
             await _catalogContext.SaveChangesAsync();
             return NoContent();

@@ -1,0 +1,56 @@
+﻿@model WebMVC.ViewModels.IndexViewModel<WebMVC.Areas.Catalog.ViewModels.BookOutputViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+@{
+    var msg = TempData["message"] as string;
+    if (!string.IsNullOrEmpty(msg))
+    {
+        <div class="alert alert-success">
+            @msg
+        </div>
+    }
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Items.FirstOrDefault().Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Items.FirstOrDefault().NumberOfPages)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Items.Count() > 0)
+        {
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NumberOfPages)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", "Books", new { area = "Catalog", id = item.Id }) |
+                        @Html.ActionLink("Details", "Details", "Books", new { area = "Catalog", id = item.Id }) |
+                        @Html.ActionLink("Delete", "Delete", "Books", new { area = "Catalog", id = item.Id })
+                    </td>
+                </tr>
+            }
+
+            <partial name="_Pagination" for="PaginationInfo" />
+        }
+    </tbody>
+</table>
