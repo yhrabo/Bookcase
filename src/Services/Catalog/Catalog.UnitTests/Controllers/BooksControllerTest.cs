@@ -49,7 +49,7 @@ namespace Catalog.UnitTests.Controllers
             var b = Assert.IsAssignableFrom<BookOutputViewModel>(result.Value);
             Assert.Equal(id, b.Id);
             Assert.Equal("Title", b.Title);
-            Assert.Equal("1", b.Isbn);
+            Assert.Equal("9780394415760", b.Isbn);
             Assert.Equal(52, b.NumberOfPages);
             Assert.Contains(b.Authors, a => a.Name == "Peter");
         }
@@ -105,7 +105,7 @@ namespace Catalog.UnitTests.Controllers
             Assert.Equal(GetFakeBooksCatalog().Count, pi.Count);
             var b = pi.Data.First();
             Assert.Equal("Next title", b.Title);
-            Assert.Equal("2", b.Isbn);
+            Assert.Equal("9780394415761", b.Isbn);
             Assert.Equal(121, b.NumberOfPages);
             Assert.Equal(2L, b.Id);
             Assert.Equal("Stacy", b.Authors.First().Name);
@@ -260,12 +260,12 @@ namespace Catalog.UnitTests.Controllers
         {
             return new Book[]
             {
-                new Book { Id = 1, Title = "Title", Isbn = "1", NumberOfPages = 52 },
-                new Book { Id = 2, Title = "Next title", Isbn = "2", NumberOfPages = 121 },
-                new Book { Id = 3, Title = "Good title", Isbn = "3", NumberOfPages = 100 },
-                new Book { Id = 4, Title = "Incredible T", Isbn = "4", NumberOfPages = 102 },
-                new Book { Id = 5, Title = "Here?", Isbn = "2-32", NumberOfPages = 434 },
-                new Book { Id = 6, Title = "Yes", Isbn = "0-1-2-3", NumberOfPages = 278 }
+                new Book { Id = 1, Title = "Title", Isbn = "9780394415760", NumberOfPages = 52 },
+                new Book { Id = 2, Title = "Next title", Isbn = "9780394415761", NumberOfPages = 121 },
+                new Book { Id = 3, Title = "Good title", Isbn = "9780394415762", NumberOfPages = 100 },
+                new Book { Id = 4, Title = "Incredible T", Isbn = "9780394415763", NumberOfPages = 102 },
+                new Book { Id = 5, Title = "Here?", Isbn = "9780394415764", NumberOfPages = 434 },
+                new Book { Id = 6, Title = "Yes", Isbn = "9780394415765", NumberOfPages = 278 }
             };
         }
 

@@ -111,7 +111,7 @@ namespace Bookcase.Services.Catalog.API.Controllers
             // Update book authors.
             void UpdateBookAuthors()
             {
-                var currentBookAuthorsIds = book.BooksAuthors.Select(ba => ba.AuthorId);
+                var currentBookAuthorsIds = book.BooksAuthors.Select(ba => ba.AuthorId).ToArray();
                 var idsToRemove = currentBookAuthorsIds.Except(bookToUpdate.AuthorsIds);
                 foreach (var aId in idsToRemove)
                 {
