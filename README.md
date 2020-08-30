@@ -13,9 +13,18 @@ Microservices are implemented as a simple CRUD. Data is stored in SQL Server and
 
 MVC communicates with microservices using HTTP protocol. The communication is based on gRPC and REST API using JSON format.
 
+For simplification, unit test covers only Catalog.API partly.
+
 ## Getting started
+You have to install Visual Studio 2019 with .NET Core cross-platform development workload.
+To build and run the application with F5 or Ctrl + F5, the “docker-compose” project has to be set as the default startup project.
+
+### Related links:
+- https://host.docker.internal/ - MVC
+- http://host.docker.internal:8080/ - IdentityServer4
+- http://host.docker.internal:5200/swagger/index.html - Swagger UI for Catalog.API
+- http://host.docker.internal:5201/swagger/index.html - Swagger UI for Shelves.API
 
 ## Next to be implemented
-The next things to be implemented are:
-- Book CRUD operations in MVC.
-- Integration events and event bus.
+The next features to be implemented:
+- Integration events and event bus: create “Read” and “To read” shelves for new registered users.
