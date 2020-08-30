@@ -28,3 +28,6 @@ To build and run the application with F5 or Ctrl + F5, the “docker-compose” 
 ## Next to be implemented
 The next features to be implemented:
 - Integration events and event bus: create “Read” and “To read” shelves for new registered users.
+
+## Example of the shelve page
+![](img/bookcase_cover.png)
