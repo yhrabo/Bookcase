@@ -101,7 +101,8 @@ namespace WebMVC.Areas.Shelves.Services
             return resp.StatusCode switch
             {
                 HttpStatusCode.OK => JsonSerializer
-                .Deserialize<PaginatedItemsDto<ShelvesViewModel>>(strCnt, _jsonSerializationOptions),
+                    .Deserialize<PaginatedItemsDto<ShelvesViewModel>>(strCnt, _jsonSerializationOptions),
+                HttpStatusCode.NoContent => null,
                 _ => throw new ApiException(strCnt)
             };
         }

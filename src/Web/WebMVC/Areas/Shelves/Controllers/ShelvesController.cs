@@ -27,6 +27,10 @@ namespace WebMVC.Areas.Shelves.Controllers
         public async Task<ActionResult> Index(string userId, int pageIndex = 1, int pageSize = 10)
         {
             var items = await _shelfService.GetShelvesAsync(userId, pageIndex, pageSize);
+            if (items == null)
+            {
+                return View();
+            }
             var vm = new IndexViewModel<ShelvesViewModel>
             {
                 Items = items.Data,
