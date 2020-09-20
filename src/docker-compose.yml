@@ -7,6 +7,9 @@ services:
   sqldata:
     image: mcr.microsoft.com/mssql/server:2017-latest
 
+  msgbroker:
+    image: rabbitmq:3-management-alpine
+
   catalog.api:
     image: ${DOCKER_REGISTRY:-bookcase}/catalog.api
     build:
@@ -23,6 +26,7 @@ services:
       dockerfile: Services/Identity/Identity.API/Dockerfile
     depends_on:
       - sqldata
+      - msgbroker
 
   shelves.api:
     image: ${DOCKER_REGISTRY:-bookcase}/shelves.api
@@ -31,6 +35,7 @@ services:
       dockerfile: Services/Shelf/Shelves.API/Dockerfile
     depends_on:
       - nosqldata
+      - msgbroker
       - identity.api
 
   webmvc:

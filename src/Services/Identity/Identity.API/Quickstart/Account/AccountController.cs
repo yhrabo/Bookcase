@@ -18,6 +18,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using Bookcase.BuildingBlocks.EventBus;
+using Identity.API.IntegrationEvents;
 
 namespace IdentityServerHost.Quickstart.UI
 {
@@ -31,6 +33,7 @@ namespace IdentityServerHost.Quickstart.UI
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
+        private readonly IEventBus _eventBus;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -38,7 +41,8 @@ namespace IdentityServerHost.Quickstart.UI
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
-            IEventService events)
+            IEventService events,
+            IEventBus eventBus)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -46,6 +50,7 @@ namespace IdentityServerHost.Quickstart.UI
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
             _events = events;
+            _eventBus = eventBus;
         }
 
         /// <summary>
@@ -237,6 +242,8 @@ namespace IdentityServerHost.Quickstart.UI
                     AddErrors(result);
                     return View(model);
                 }
+
+                _eventBus.Publish(new UserCreatedIntegrationEvent(user.Id));
 
                 result = _userManager.AddClaimsAsync(user, new Claim[]{
                             new Claim(JwtClaimTypes.Name, model.Name),

@@ -17,6 +17,11 @@ services:
     volumes:
       - bookcase-sqlvolume:/var/opt/mssql/data
 
+  msgbroker:
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
   catalog.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -37,6 +42,9 @@ services:
       - MvcClient=https://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}
       - GRPC_PORT=8081
       - PORT=8080
+      - EventBusHostName=${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}
+      - EventBusUserName=guest
+      - EventBusPassword=guest
     ports:
       - "8080:8080"
       - "8081:8081"
@@ -47,6 +55,9 @@ services:
       - ConnectionString=${BOOKCASE_NOSQLDB:-mongodb://nosqldata}
       - DatabaseName=ShelvesDb
       - IdentityUrl=http://${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}:8080
+      - EventBusHostName=${BOOKCASE_EXTERNAL_DNS_NAME_OR_IP}
+      - EventBusUserName=guest
+      - EventBusPassword=guest
     ports:
       - "5201:80"
 

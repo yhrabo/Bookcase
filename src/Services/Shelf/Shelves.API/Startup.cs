@@ -1,4 +1,7 @@
+using Bookcase.BuildingBlocks.EventBus;
+using Bookcase.BuildingBlocks.EventBusRabbitMQ;
 using Bookcase.Services.Shelves.API.Infrastructure;
+using Bookcase.Services.Shelves.API.IntegrationEvents;
 using Bookcase.Services.Shelves.API.Models;
 using Bookcase.Services.Shelves.API.Services;
 using Bookcase.Services.Shelves.API.ViewModels;
@@ -9,9 +12,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
+using RabbitMQ.Client;
 using Shelves.API.Infrastructure.Middleware;
 using System;
 using System.Collections.Generic;
@@ -66,6 +71,7 @@ namespace Bookcase.Services.Shelves.API
             //        policy.RequireClaim("scope", "shelves");
             //    });
             //});
+            services.AddEventBasedIntegration(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,6 +100,18 @@ namespace Bookcase.Services.Shelves.API
                 endpoints.MapControllers();
                 //.RequireAuthorization("ShelvesApiScope");
             });
+
+            app.SubscribeToEvents();
+        }
+    }
+
+    static class IAppBuilderExtensions
+    {
+        public static IApplicationBuilder SubscribeToEvents(this IApplicationBuilder appBuilder)
+        {
+            var eventBus = appBuilder.ApplicationServices.GetRequiredService<IEventBus>();
+            eventBus.Subscribe<UserCreatedIntegrationEvent, UserCreatedIntegrationEventHandler>();
+            return appBuilder;
         }
     }
 
@@ -154,6 +172,36 @@ namespace Bookcase.Services.Shelves.API
                 });
                 options.OperationFilter<AuthResponsesOperationFilter>();
             });
+            return services;
+        }
+
+        public static IServiceCollection AddEventBasedIntegration(this IServiceCollection services, IConfiguration cfg)
+        {
+            services.AddSingleton<IEventBusSubscriptionManager, InMemoryEventBusSubscriptionManager>();
+            services.AddSingleton<IPersistentConnection>(services =>
+            {
+                var logger = services.GetRequiredService<ILogger<DefaultPersistentConnection>>();
+                var factory = new ConnectionFactory()
+                {
+                    HostName = cfg.GetValue<string>("EventBusHostName"),
+                    UserName = cfg.GetValue("EventBusUserName", string.Empty),
+                    Password = cfg.GetValue("EventBusPassword", string.Empty),
+                    DispatchConsumersAsync = true,
+                };
+                return new DefaultPersistentConnection(factory, logger);
+            });
+            services.AddSingleton<IEventBus>(services =>
+            {
+                var subsManager = services.GetRequiredService<IEventBusSubscriptionManager>();
+                var persConn = services.GetRequiredService<IPersistentConnection>();
+                var exName = cfg.GetValue<string>("MessageBroker:ExchangeName");
+                var quName = cfg.GetValue<string>("MessageBroker:QueueName");
+                var logger = services.GetRequiredService<ILogger<RabbitMQEventBus>>();
+                return new RabbitMQEventBus(subsManager, persConn, exName, quName, logger, services);
+            });
+
+            services.AddTransient<UserCreatedIntegrationEventHandler>();
+
             return services;
         }
     }

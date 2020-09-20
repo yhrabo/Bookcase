@@ -1,4 +1,6 @@
-﻿using Identity.API.Data;
+﻿using Bookcase.BuildingBlocks.EventBus;
+using Bookcase.BuildingBlocks.EventBusRabbitMQ;
+using Identity.API.Data;
 using Identity.API.Models;
 using Identity.API.Services;
 using Microsoft.AspNetCore.Builder;
@@ -8,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
 using System;
 using System.Reflection;
 
@@ -49,6 +53,7 @@ namespace Bookcase.Services.Identity.API
             builder.AddDeveloperSigningCredential();
 
             services.AddGrpc();
+            services.AddEventBasedIntegration(Configuration);
         }
 
         public void Configure(IApplicationBuilder app)
@@ -115,6 +120,33 @@ namespace Bookcase.Services.Identity.API
                         });
                 });
             return builder;
+        }
+
+        public static IServiceCollection AddEventBasedIntegration(this IServiceCollection services, IConfiguration cfg)
+        {
+            services.AddSingleton<IEventBusSubscriptionManager, InMemoryEventBusSubscriptionManager>();
+            services.AddSingleton<IPersistentConnection>(services =>
+            {
+                var logger = services.GetRequiredService<ILogger<DefaultPersistentConnection>>();
+                var factory = new ConnectionFactory()
+                {
+                    HostName = cfg.GetValue<string>("EventBusHostName"),
+                    UserName = cfg.GetValue("EventBusUserName", string.Empty),
+                    Password = cfg.GetValue("EventBusPassword", string.Empty),
+                    DispatchConsumersAsync = true,
+                };
+                return new DefaultPersistentConnection(factory, logger);
+            });
+            services.AddSingleton<IEventBus>(services =>
+            {
+                var subsManager = services.GetRequiredService<IEventBusSubscriptionManager>();
+                var persConn = services.GetRequiredService<IPersistentConnection>();
+                var exName = cfg.GetValue<string>("MessageBroker:ExchangeName");
+                var quName = cfg.GetValue<string>("MessageBroker:QueueName");
+                var logger = services.GetRequiredService<ILogger<RabbitMQEventBus>>();
+                return new RabbitMQEventBus(subsManager, persConn, exName, quName, logger, services);
+            });
+            return services;
         }
     }
 }

@@ -8,8 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="IntegrationEvents\Events\" />
-    <Folder Include="IntegrationEvents\EventHandling\" />
+    <Compile Remove="IntegrationEvents\EventHandling\**" />
+    <Compile Remove="IntegrationEvents\Events\**" />
+    <Content Remove="IntegrationEvents\EventHandling\**" />
+    <Content Remove="IntegrationEvents\Events\**" />
+    <EmbeddedResource Remove="IntegrationEvents\EventHandling\**" />
+    <EmbeddedResource Remove="IntegrationEvents\Events\**" />
+    <None Remove="IntegrationEvents\EventHandling\**" />
+    <None Remove="IntegrationEvents\Events\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,6 +23,11 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="MongoDB.Driver" Version="2.10.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\EventBasedCommunication\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\EventBasedCommunication\EventBus\EventBus.csproj" />
   </ItemGroup>
 
 
